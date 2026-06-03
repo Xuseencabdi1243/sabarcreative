@@ -7,15 +7,56 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #030303; }
+        :root { --theme-accent: #ffffff; --theme-accent-rgb: 255, 255, 255; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background:
+                radial-gradient(circle at 15% 10%, rgba(var(--theme-accent-rgb), 0.14), transparent 26rem),
+                linear-gradient(180deg, #060606, #030303 45%, #010101);
+            transition: background 0.5s ease;
+        }
+        body.theme-cyan { --theme-accent: #22d3ee; --theme-accent-rgb: 34, 211, 238; }
+        body.theme-rose { --theme-accent: #fb7185; --theme-accent-rgb: 251, 113, 133; }
+        body.theme-emerald { --theme-accent: #34d399; --theme-accent-rgb: 52, 211, 153; }
+        body.theme-gold { --theme-accent: #facc15; --theme-accent-rgb: 250, 204, 21; }
         .admin-section { display: none; }
-        .admin-section.active { display: block; }
+        .admin-section.active { display: block; animation: adminIn 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes adminIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .admin-card {
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease, box-shadow 0.35s ease;
+        }
+        .admin-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(var(--theme-accent-rgb), 0.34);
+            box-shadow: 0 18px 45px -26px rgba(var(--theme-accent-rgb), 0.7);
+        }
+        .theme-dot {
+            width: 1.45rem;
+            height: 1.45rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(255,255,255,0.18);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .theme-dot:hover,
+        .theme-dot.active {
+            transform: translateY(-2px) scale(1.08);
+            box-shadow: 0 0 0 4px rgba(var(--theme-accent-rgb), 0.15);
+        }
+        .accent-button {
+            background: var(--theme-accent);
+            color: #050505;
+            transition: transform 0.25s ease, filter 0.25s ease;
+        }
+        .accent-button:hover { transform: translateY(-2px); filter: brightness(1.06); }
     </style>
 </head>
-<body class="bg-[#030303] text-zinc-400 p-4 md:p-6" onload="checkLoginStatus()">
+<body class="bg-[#030303] text-zinc-400 p-4 md:p-6" onload="initTheme(); checkLoginStatus()">
 
     <main id="login-section" class="admin-section active py-24 px-6 max-w-md mx-auto w-full">
-        <div class="border border-zinc-900 bg-zinc-950 p-8 rounded-3xl space-y-6 shadow-2xl">
+        <div class="admin-card border border-zinc-900 bg-zinc-950/90 p-8 rounded-3xl space-y-6 shadow-2xl">
             <div class="text-center">
                 <span class="text-[10px] uppercase tracking-[0.3em] text-zinc-600 font-bold">🔒 SECURE CORE</span>
                 <h2 class="text-2xl font-bold text-white uppercase tracking-tight mt-2">SABAR Studio</h2>
@@ -29,14 +70,14 @@
                     <label class="text-[10px] uppercase tracking-widest text-zinc-500 block mb-2">Password</label>
                     <input type="password" id="login-password" required class="w-full bg-[#030303] border border-zinc-900 rounded-xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-zinc-700" placeholder="••••••••">
                 </div>
-                <button type="submit" class="w-full bg-white text-black py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-zinc-200 transition">Gasho System-ka</button>
+                <button type="submit" class="w-full accent-button py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest transition">Gasho System-ka</button>
             </form>
         </div>
     </main>
 
     <main id="dashboard-section" class="admin-section max-w-6xl mx-auto space-y-10">
         
-        <div class="flex justify-between items-center border-b border-zinc-900 pb-6">
+        <div class="flex flex-col md:flex-row gap-4 justify-between md:items-center border-b border-zinc-900 pb-6">
             <div>
                 <h1 class="text-xl font-bold text-white tracking-widest uppercase">🎛️ SABAR STUDIO CONTROL</h1>
                 <p class="text-xs text-zinc-600 mt-1">Maamulista Mashaariicda iyo Falanqaynta Suuqgeynta</p>
@@ -45,14 +86,14 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-zinc-950 border border-zinc-900 p-8 rounded-2xl flex justify-between items-center">
+            <div class="admin-card bg-zinc-950/90 border border-zinc-900 p-8 rounded-2xl flex justify-between items-center">
                 <div>
                     <p class="text-[10px] uppercase tracking-widest text-zinc-500">Mashaariicda Live-ka ah</p>
                     <h3 id="analytic-projects" class="text-4xl font-bold text-white tracking-tight mt-2">0</h3>
                 </div>
                 <div class="text-3xl bg-zinc-900/40 w-14 h-14 rounded-xl flex items-center justify-center border border-zinc-800">🎨</div>
             </div>
-            <div class="bg-zinc-950 border border-zinc-900 p-8 rounded-2xl flex justify-between items-center">
+            <div class="admin-card bg-zinc-950/90 border border-zinc-900 p-8 rounded-2xl flex justify-between items-center">
                 <div>
                     <p class="text-[10px] uppercase tracking-widest text-zinc-500">Fariimaha Macaamiisha</p>
                     <h3 id="analytic-messages" class="text-4xl font-bold text-white tracking-tight mt-2">0</h3>
@@ -63,7 +104,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             
-            <div class="bg-zinc-950 border border-zinc-900 p-6 rounded-2xl sticky top-6">
+            <div class="admin-card bg-zinc-950/90 border border-zinc-900 p-6 rounded-2xl sticky top-6">
                 <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-4">➕ Publish New Brand Identity</h3>
                 <form id="add-project-form" class="space-y-4 text-xs" enctype="multipart/form-data">
                     <div>
@@ -86,7 +127,7 @@
                         <label class="block text-zinc-500 mb-1">Description</label>
                         <textarea id="p-description" rows="3" required class="w-full bg-zinc-900 border border-zinc-800 p-3 rounded-lg text-white focus:outline-none"></textarea>
                     </div>
-                    <button type="submit" class="w-full bg-white text-black py-3 rounded-lg font-bold uppercase tracking-wider hover:bg-zinc-200 transition">Upload to Live Site</button>
+                    <button type="submit" class="w-full accent-button py-3 rounded-lg font-bold uppercase tracking-wider transition">Upload to Live Site</button>
                 </form>
             </div>
 
@@ -110,6 +151,26 @@
     </main>
 
     <script>
+        const themeNames = ['default', 'cyan', 'rose', 'emerald', 'gold'];
+
+        function initTheme() {
+            setTheme(localStorage.getItem('sabarTheme') || 'default', false);
+        }
+
+        function setTheme(themeName, shouldStore = true) {
+            const selectedTheme = themeNames.includes(themeName) ? themeName : 'default';
+            document.body.classList.remove(...themeNames.filter(name => name !== 'default').map(name => `theme-${name}`));
+            if (selectedTheme !== 'default') {
+                document.body.classList.add(`theme-${selectedTheme}`);
+            }
+            document.querySelectorAll('.theme-dot').forEach(button => {
+                button.classList.toggle('active', button.dataset.theme === selectedTheme);
+            });
+            if (shouldStore) {
+                localStorage.setItem('sabarTheme', selectedTheme);
+            }
+        }
+
         function showSection(id) {
             document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
             const target = document.getElementById(id);

@@ -8,7 +8,56 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=200;300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #030303; overflow-x: hidden; }
+        :root {
+            --theme-accent: #ffffff;
+            --theme-accent-rgb: 255, 255, 255;
+            --theme-accent-2: #22c55e;
+            --theme-bg: #030303;
+            --theme-panel: #0a0a0c;
+            --theme-border: rgba(255, 255, 255, 0.08);
+            --theme-muted: #71717a;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background:
+                radial-gradient(circle at 20% 10%, rgba(var(--theme-accent-rgb), 0.16), transparent 28rem),
+                radial-gradient(circle at 90% 20%, rgba(34, 197, 94, 0.10), transparent 24rem),
+                linear-gradient(180deg, #060606 0%, var(--theme-bg) 40%, #010101 100%);
+            overflow-x: hidden;
+            transition: background 0.6s ease, color 0.4s ease;
+        }
+        body.theme-cyan {
+            --theme-accent: #22d3ee;
+            --theme-accent-rgb: 34, 211, 238;
+            --theme-accent-2: #a78bfa;
+        }
+        body.theme-rose {
+            --theme-accent: #fb7185;
+            --theme-accent-rgb: 251, 113, 133;
+            --theme-accent-2: #fbbf24;
+        }
+        body.theme-emerald {
+            --theme-accent: #34d399;
+            --theme-accent-rgb: 52, 211, 153;
+            --theme-accent-2: #38bdf8;
+        }
+        body.theme-gold {
+            --theme-accent: #facc15;
+            --theme-accent-rgb: 250, 204, 21;
+            --theme-accent-2: #fb923c;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+            background-size: 70px 70px;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent 70%);
+        }
         
         /* ✨ GLOW CARD STYLE */
         .glow-card {
@@ -16,16 +65,36 @@
             background: rgba(10, 10, 12, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.03);
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+        .glow-card::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            opacity: 0;
+            background: linear-gradient(135deg, rgba(var(--theme-accent-rgb), 0.28), transparent 45%);
+            transition: opacity 0.35s ease;
+            pointer-events: none;
         }
         .glow-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 20px 40px -15px rgba(255, 255, 255, 0.05);
+            transform: translateY(-8px) scale(1.01);
+            border-color: rgba(var(--theme-accent-rgb), 0.35);
+            box-shadow: 0 24px 55px -22px rgba(var(--theme-accent-rgb), 0.55);
+        }
+        .glow-card:hover::before {
+            opacity: 1;
         }
         
         html { scroll-behavior: smooth; }
         .page { display: none; }
-        .page.active { display: block; }
+        .page.active {
+            display: block;
+            animation: pageIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes pageIn {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         /* ✨ SCROLL REVEAL ANIMATION */
         .reveal {
@@ -48,11 +117,80 @@
             position: absolute;
             width: 600px;
             height: 600px;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(var(--theme-accent-rgb), 0.18) 0%, transparent 68%);
             border-radius: 50%;
             pointer-events: none;
             transform: translate(-50%, -50%);
             z-index: 0;
+            filter: blur(2px);
+            transition: background 0.35s ease;
+        }
+        .theme-panel {
+            border: 1px solid var(--theme-border);
+            background: rgba(9, 9, 11, 0.72);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+        }
+        .theme-dot {
+            width: 1.55rem;
+            height: 1.55rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(255,255,255,0.18);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        .theme-dot:hover,
+        .theme-dot.active {
+            transform: translateY(-2px) scale(1.08);
+            border-color: rgba(255,255,255,0.7);
+            box-shadow: 0 0 0 4px rgba(var(--theme-accent-rgb), 0.16), 0 12px 30px -16px rgba(var(--theme-accent-rgb), 0.9);
+        }
+        .accent-text { color: var(--theme-accent); }
+        .accent-ring { border-color: rgba(var(--theme-accent-rgb), 0.38) !important; }
+        .accent-button {
+            background: var(--theme-accent);
+            color: #020202;
+            box-shadow: 0 16px 45px -20px rgba(var(--theme-accent-rgb), 0.85);
+        }
+        .accent-button:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.06);
+        }
+        .magnetic-button {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        .hero-title span {
+            background: linear-gradient(90deg, #fff, var(--theme-accent), var(--theme-accent-2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 180% 100%;
+            animation: titleShimmer 7s ease-in-out infinite alternate;
+        }
+        @keyframes titleShimmer {
+            from { background-position: 0% 50%; }
+            to { background-position: 100% 50%; }
+        }
+        .float-soft {
+            animation: floatSoft 5.5s ease-in-out infinite;
+        }
+        @keyframes floatSoft {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .stagger-item {
+            opacity: 0;
+            transform: translateY(22px);
+            animation: itemRise 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes itemRise {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
         }
 
         /* 🌐 PREMIUM CUSTOM GOOGLE TRANSLATE BOX */
@@ -82,12 +220,12 @@
         body { top: 0px !important; }
     </style>
 </head>
-<body class="text-zinc-400 antialiased selection:bg-white selection:text-black" onload="fetchDataFromServer()">
+<body class="text-zinc-400 antialiased selection:bg-white selection:text-black" onload="initTheme(); fetchDataFromServer()">
 
-    <div class="w-full bg-[#09090b] border-b border-zinc-900/60 py-2.5 px-6 md:px-16 flex justify-between items-center text-[10px] uppercase tracking-widest text-zinc-500">
+    <div class="w-full bg-[#09090b]/90 border-b border-zinc-900/60 py-2.5 px-6 md:px-16 flex flex-col md:flex-row gap-3 md:gap-0 justify-between items-center text-[10px] uppercase tracking-widest text-zinc-500">
         <div class="flex items-center space-x-6">
             <div class="flex items-center space-x-2 border-r border-zinc-800 pr-4">
-                <span class="w-1.5 h-1.5 rounded-full bg-white/20 animate-pulse"></span>
+                <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background: var(--theme-accent);"></span>
                 <span class="text-zinc-400 font-medium">SABAR Studio</span> 
             </div>
             <div class="flex items-center space-x-4 text-sm text-zinc-500">
@@ -104,6 +242,14 @@
         </div>
         
         <div class="flex items-center space-x-3">
+            <div class="theme-panel rounded-full px-3 py-1.5 flex items-center gap-2">
+                <span class="text-[9px] text-zinc-600 font-bold tracking-wider hidden sm:inline">Theme:</span>
+                <button type="button" class="theme-dot" data-theme="default" onclick="setTheme('default')" aria-label="White theme" title="White theme" style="background: linear-gradient(135deg, #ffffff, #a1a1aa);"></button>
+                <button type="button" class="theme-dot" data-theme="cyan" onclick="setTheme('cyan')" aria-label="Cyan theme" title="Cyan theme" style="background: linear-gradient(135deg, #22d3ee, #a78bfa);"></button>
+                <button type="button" class="theme-dot" data-theme="rose" onclick="setTheme('rose')" aria-label="Rose theme" title="Rose theme" style="background: linear-gradient(135deg, #fb7185, #fbbf24);"></button>
+                <button type="button" class="theme-dot" data-theme="emerald" onclick="setTheme('emerald')" aria-label="Emerald theme" title="Emerald theme" style="background: linear-gradient(135deg, #34d399, #38bdf8);"></button>
+                <button type="button" class="theme-dot" data-theme="gold" onclick="setTheme('gold')" aria-label="Gold theme" title="Gold theme" style="background: linear-gradient(135deg, #facc15, #fb923c);"></button>
+            </div>
             <span class="text-[9px] text-zinc-600 font-bold tracking-wider">Select Lang:</span>
             <div id="google_translate_element"></div>
         </div>
@@ -111,7 +257,7 @@
 
     <header class="w-full py-6 px-6 md:px-16 flex justify-between items-center border-b border-zinc-900/50 sticky top-0 bg-[#030303]/80 backdrop-blur-xl z-50">
         <div class="flex items-center space-x-3 cursor-pointer" onclick="showPage('home')">
-            <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white text-xs font-bold">S</div>
+            <div class="w-8 h-8 rounded-lg bg-white/5 accent-ring flex items-center justify-center text-white text-xs font-bold float-soft">S</div>
             <span class="text-base font-bold tracking-[0.4em] text-white">SABAR</span>
         </div>
         <nav class="hidden md:flex space-x-12 text-[11px] uppercase tracking-[0.25em] font-medium">
@@ -123,7 +269,7 @@
         </nav>
         
         <div>
-            <button onclick="showPage('contact')" class="bg-white text-black px-6 py-2.5 rounded-full text-[11px] font-bold uppercase tracking-widest hover:bg-zinc-200 transition duration-300">
+            <button onclick="showPage('contact')" class="accent-button magnetic-button px-6 py-2.5 rounded-full text-[11px] font-bold uppercase tracking-widest transition duration-300">
                 Get In Touch
             </button>
         </div>
@@ -139,15 +285,15 @@
             <div class="mouse-glow" id="glow-element"></div>
             
             <div class="relative z-10 flex flex-col justify-center items-center">
-                <div class="inline-flex items-center space-x-2 border border-zinc-800/80 rounded-full px-4 py-1.5 text-[10px] uppercase tracking-[0.25em] text-zinc-400 mb-8 bg-zinc-900/30">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <div class="inline-flex items-center space-x-2 border border-zinc-800/80 accent-ring rounded-full px-4 py-1.5 text-[10px] uppercase tracking-[0.25em] text-zinc-400 mb-8 bg-zinc-900/30 stagger-item">
+                    <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background: var(--theme-accent);"></span>
                     <span>Available for Global Projects</span>
                 </div>
-                <h1 class="text-4xl md:text-8xl font-bold tracking-tight mb-8 max-w-5xl leading-[1.05] text-white font-light">
+                <h1 class="hero-title text-4xl md:text-8xl font-bold tracking-tight mb-8 max-w-5xl leading-[1.05] text-white font-light stagger-item" style="animation-delay: 0.12s;">
                     <span>We Create Digital Impact.</span>
                 </h1>
                 
-                <div class="grid grid-cols-3 gap-8 my-12 max-w-xl w-full border-y border-zinc-900/60 py-6">
+                <div class="grid grid-cols-3 gap-8 my-12 max-w-xl w-full border-y border-zinc-900/60 py-6 stagger-item" style="animation-delay: 0.22s;">
                     <div>
                         <h4 id="stats-projects-done" class="text-2xl md:text-4xl font-bold text-white tracking-tight">0</h4>
                         <p class="text-[9px] uppercase tracking-widest text-zinc-600 mt-1">Projects Done</p>
@@ -162,9 +308,9 @@
                     </div>
                 </div>
 
-                <div class="flex space-x-4">
-                    <button onclick="showPage('brands')" class="bg-white text-black px-10 py-4 rounded-full font-medium text-xs uppercase tracking-widest hover:bg-zinc-200 transition">Eeg Full Brands</button>
-                    <button onclick="scrollToSection('showcase')" class="bg-zinc-900/80 text-white border border-zinc-800 px-10 py-4 rounded-full font-medium text-xs uppercase tracking-widest hover:bg-white hover:text-black transition">Showcase Gallery</button>
+                <div class="flex flex-col sm:flex-row gap-4 stagger-item" style="animation-delay: 0.34s;">
+                    <button onclick="showPage('brands')" class="accent-button magnetic-button px-10 py-4 rounded-full font-medium text-xs uppercase tracking-widest transition">Eeg Full Brands</button>
+                    <button onclick="scrollToSection('showcase')" class="magnetic-button bg-zinc-900/80 text-white border border-zinc-800 px-10 py-4 rounded-full font-medium text-xs uppercase tracking-widest hover:bg-white hover:text-black transition">Showcase Gallery</button>
                 </div>
             </div>
         </section>
@@ -242,20 +388,20 @@
                         <button onclick="showPage('contact')" class="w-full bg-zinc-900 border border-zinc-800 text-white py-3.5 rounded-xl text-xs uppercase font-bold tracking-wider hover:bg-white hover:text-black transition mt-8">Dooro Xidhmada</button>
                     </div>
 
-                    <div class="border-2 border-emerald-500/30 bg-zinc-900/40 p-8 rounded-3xl flex flex-col justify-between relative shadow-2xl">
-                        <span class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-emerald-500 text-black text-[8px] uppercase font-bold tracking-widest px-4 py-1 rounded-full">Qandaraas 10 Sano</span>
+                    <div class="border-2 accent-ring bg-zinc-900/40 p-8 rounded-3xl flex flex-col justify-between relative shadow-2xl glow-card">
+                        <span class="absolute -top-3 left-1/2 transform -translate-x-1/2 accent-button text-[8px] uppercase font-bold tracking-widest px-4 py-1 rounded-full">Qandaraas 10 Sano</span>
                         <div>
-                            <h4 class="text-emerald-400 font-bold text-base mb-2">Xidhmada Iskaashiga</h4>
+                            <h4 class="accent-text font-bold text-base mb-2">Xidhmada Iskaashiga</h4>
                             <h3 class="text-2xl font-bold text-white mb-1">Bilaash Kula Billow</h3>
                             <p class="text-[10px] text-zinc-500 mb-6 lowercase">Adeegyo naqshadayn oo lagu beddelanayo faa'iido-wadaag dhowr sano ah</p>
                             <ul class="space-y-4 text-xs text-zinc-400 border-t border-zinc-900 pt-6">
-                                <li>✓ Adeegyada Koritaanka oo <span class="text-emerald-400 font-medium">Bilaash</span> ah</li>
+                                <li>✓ Adeegyada Koritaanka oo <span class="accent-text font-medium">Bilaash</span> ah</li>
                                 <li>✓ Heshiis Istiraatiijiyadeed oo 10 Sano ah</li>
                                 <li>✓ Faa'iido-wadaag iyo Dakhli-wadaag koraya</li>
                                 <li>✓ Kordhin qiimo oo tartiib-tartiib ah</li>
                             </ul>
                         </div>
-                        <button onclick="showPage('contact')" class="w-full bg-emerald-500 text-black py-3.5 rounded-xl text-xs uppercase font-bold tracking-wider hover:bg-emerald-400 transition mt-8">Codsiga Iskaashiga</button>
+                        <button onclick="showPage('contact')" class="w-full accent-button magnetic-button py-3.5 rounded-xl text-xs uppercase font-bold tracking-wider transition mt-8">Codsiga Iskaashiga</button>
                     </div>
 
                     <div class="border border-white/20 bg-zinc-900/60 p-8 rounded-3xl flex flex-col justify-between relative shadow-2xl">
@@ -291,13 +437,13 @@
         <section class="py-24 px-6 md:px-16 max-w-3xl mx-auto min-h-[85vh] flex flex-col justify-center">
             <button onclick="showPage('home')" class="inline-flex items-center space-x-2 text-xs uppercase tracking-widest text-zinc-400 mb-12 hover:text-white transition"><span>← Back to Home</span></button>
             <h2 class="text-3xl md:text-5xl font-bold text-white uppercase tracking-tight mb-8">Aan Bilaawno Mashruucaaga</h2>
-            <form class="space-y-6 bg-zinc-950 border border-zinc-900/80 p-8 rounded-2xl">
+            <form class="space-y-6 bg-zinc-950/90 border border-zinc-900/80 accent-ring p-8 rounded-2xl glow-card">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <input type="text" required class="w-full bg-[#030303] border border-zinc-900 rounded-xl px-5 py-4 text-sm text-white focus:outline-none" placeholder="Magacaaga">
                     <input type="email" required class="w-full bg-[#030303] border border-zinc-900 rounded-xl px-5 py-4 text-sm text-white focus:outline-none" placeholder="E-mailkaaga">
                 </div>
                 <textarea rows="5" required class="w-full bg-[#030303] border border-zinc-900 rounded-xl px-5 py-4 text-sm text-white focus:outline-none" placeholder="Mashaariicda..."></textarea>
-                <button type="submit" class="w-full bg-white text-black py-4 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-zinc-200 transition">Send Brief</button>
+                <button type="submit" class="w-full accent-button magnetic-button py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition">Send Brief</button>
             </form>
         </section>
     </main>
@@ -337,6 +483,26 @@
 
     <script>
         // ======= 🖱️ MOUSE INTERACTIVE MOVING EFFECT =======
+        const themeNames = ['default', 'cyan', 'rose', 'emerald', 'gold'];
+
+        function initTheme() {
+            setTheme(localStorage.getItem('sabarTheme') || 'default', false);
+        }
+
+        function setTheme(themeName, shouldStore = true) {
+            const selectedTheme = themeNames.includes(themeName) ? themeName : 'default';
+            document.body.classList.remove(...themeNames.filter(name => name !== 'default').map(name => `theme-${name}`));
+            if (selectedTheme !== 'default') {
+                document.body.classList.add(`theme-${selectedTheme}`);
+            }
+            document.querySelectorAll('.theme-dot').forEach(button => {
+                button.classList.toggle('active', button.dataset.theme === selectedTheme);
+            });
+            if (shouldStore) {
+                localStorage.setItem('sabarTheme', selectedTheme);
+            }
+        }
+
         const heroSection = document.getElementById('hero-interactive-container');
         const glowElement = document.getElementById('glow-element');
 
@@ -410,10 +576,10 @@
 
                     data.forEach((project, index) => {
                         const projectHTML = `
-                            <div class="bg-zinc-950 border border-zinc-900 p-6 rounded-3xl space-y-4">
-                                <img src="${project.image}" onclick="openLightbox('${project.image}')" class="h-80 w-full object-cover rounded-2xl border border-zinc-900 cursor-zoom-in hover:opacity-90 transition" alt="${project.title}">
+                            <div class="bg-zinc-950 border border-zinc-900 p-6 rounded-3xl space-y-4 glow-card stagger-item" style="animation-delay: ${Math.min(index * 0.06, 0.36)}s;">
+                                <img src="${project.image}" onclick="openLightbox('${project.image}')" class="h-80 w-full object-cover rounded-2xl border border-zinc-900 cursor-zoom-in hover:opacity-90 transition duration-500 hover:scale-[1.015]" alt="${project.title}">
                                 <div class="flex justify-between items-center">
-                                    <span class="text-[10px] uppercase tracking-widest bg-zinc-900 px-3 py-1 rounded-full text-zinc-400">${project.category}</span>
+                                    <span class="text-[10px] uppercase tracking-widest bg-zinc-900 px-3 py-1 rounded-full accent-text">${project.category}</span>
                                 </div>
                                 <h3 class="text-xl font-bold text-white tracking-wide">${project.title}</h3>
                                 <p class="text-xs text-zinc-500 leading-relaxed font-light">${project.description}</p>
@@ -423,8 +589,8 @@
 
                         if (index < 3 && showcaseContainer) {
                             const showcaseHTML = `
-                                <div class="bg-zinc-950 border border-zinc-900/60 p-4 rounded-2xl glow-card">
-                                    <img src="${project.image}" onclick="openLightbox('${project.image}')" class="h-56 w-full object-cover rounded-xl mb-4 border border-zinc-900 cursor-zoom-in hover:opacity-90 transition" alt="${project.title}">
+                                <div class="bg-zinc-950 border border-zinc-900/60 p-4 rounded-2xl glow-card stagger-item" style="animation-delay: ${index * 0.08}s;">
+                                    <img src="${project.image}" onclick="openLightbox('${project.image}')" class="h-56 w-full object-cover rounded-xl mb-4 border border-zinc-900 cursor-zoom-in hover:opacity-90 transition duration-500 hover:scale-[1.02]" alt="${project.title}">
                                     <h4 class="text-sm font-bold text-white">${project.title}</h4>
                                     <p class="text-xs text-zinc-500 mt-1">${project.category}</p>
                                 </div>`;
