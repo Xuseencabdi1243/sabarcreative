@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <title>SABAR Studio - Auth Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#030303] text-zinc-400 min-h-screen flex items-center justify-center font-sans">
+    <div class="max-w-md w-full bg-zinc-950 border border-zinc-900/60 p-10 rounded-3xl shadow-2xl">
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-bold text-white tracking-[0.3em] uppercase">SABAR</h1>
+            <p class="text-[10px] uppercase tracking-widest text-zinc-600 mt-2">Studio Authentication Portal</p>
+        </div>
+        <div id="error-alert" class="hidden mb-4 p-3 bg-red-950/40 border border-red-900 rounded-xl text-center text-xs text-red-400 font-medium"></div>
+        <div class="space-y-5 text-xs">
+            <div>
+                <label class="block text-zinc-500 mb-1.5 uppercase tracking-wider">Username</label>
+                <input type="text" id="username" class="w-full bg-zinc-900 border border-zinc-800 p-3.5 rounded-xl text-white focus:outline-none focus:border-zinc-700 transition">
+            </div>
+            <div>
+                <label class="block text-zinc-500 mb-1.5 uppercase tracking-wider">Password</label>
+                <input type="password" id="password" class="w-full bg-zinc-900 border border-zinc-800 p-3.5 rounded-xl text-white focus:outline-none focus:border-zinc-700 transition">
+            </div>
+            <button onclick="performLogin()" class="w-full bg-white text-black py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-zinc-200 transition duration-300">
+                Gasho Portal-ka
+            </button>
+        </div>
+    </div>
+    <script>
+        function performLogin() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            fetch('/api/admin/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: u, password: p })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) { window.location.href = '/admin.html'; }
+                else {
+                    const alert = document.getElementById('error-alert');
+                    alert.innerText = data.message;
+                    alert.classList.remove('hidden');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

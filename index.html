@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SABAR Creative Design Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #030303; overflow-x: hidden; }
+        
+        /* ✨ GLOW CARD STYLE */
+        .glow-card {
+            position: relative;
+            background: rgba(10, 10, 12, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glow-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px -15px rgba(255, 255, 255, 0.05);
+        }
+        
+        html { scroll-behavior: smooth; }
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* ✨ SCROLL REVEAL ANIMATION */
+        .reveal {
+            position: relative;
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.reveal-active {
+            transform: translateY(0px);
+            opacity: 1;
+        }
+
+        /* 🖱️ MOUSE TRACKING GLOW BACKGROUND */
+        #hero-interactive-container {
+            position: relative;
+            overflow: hidden;
+        }
+        .mouse-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+
+        /* 🌐 PREMIUM CUSTOM GOOGLE TRANSLATE BOX */
+        .goog-te-gadget-simple {
+            background-color: #0d0d11 !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            padding: 5px 14px !important;
+            border-radius: 9999px !important;
+            font-size: 10px !important;
+            font-weight: 600 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.08em !important;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            transition: all 0.3s ease !important;
+            display: inline-flex !important;
+            align-items: center !important;
+        }
+        .goog-te-gadget-simple:hover {
+            border-color: rgba(255, 255, 255, 0.25) !important;
+            background-color: #16161f !important;
+        }
+        .goog-te-gadget-simple span {
+            color: rgba(255, 255, 255, 0.85) !important;
+        }
+        .goog-te-gadget-icon { display: none !important; }
+        .goog-te-banner-frame { display: none !important; }
+        body { top: 0px !important; }
+    </style>
+</head>
+<body class="text-zinc-400 antialiased selection:bg-white selection:text-black" onload="fetchDataFromServer()">
+
+    <div class="w-full bg-[#09090b] border-b border-zinc-900/60 py-2.5 px-6 md:px-16 flex justify-between items-center text-[10px] uppercase tracking-widest text-zinc-500">
+        <div class="flex items-center space-x-6">
+            <div class="flex items-center space-x-2 border-r border-zinc-800 pr-4">
+                <span class="w-1.5 h-1.5 rounded-full bg-white/20 animate-pulse"></span>
+                <span class="text-zinc-400 font-medium">SABAR Studio</span> 
+            </div>
+            <div class="flex items-center space-x-4 text-sm text-zinc-500">
+                <a href="https://www.facebook.com/share/1ER37E6PwS/" target="_blank" class="hover:text-[#1877F2] transition duration-300">
+                    <i class="fa-brands fa-facebook-f"></i>
+                </a>
+                <a href="https://www.tiktok.com/@sabar.creative" target="_blank" class="hover:text-white transition duration-300">
+                    <i class="fa-brands fa-tiktok"></i>
+                </a>
+                <a href="https://www.youtube.com/@SabarCreative-1" target="_blank" class="hover:text-[#FF0000] transition duration-300">
+                    <i class="fa-brands fa-youtube"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-3">
+            <span class="text-[9px] text-zinc-600 font-bold tracking-wider">Select Lang:</span>
+            <div id="google_translate_element"></div>
+        </div>
+    </div>
+
+    <header class="w-full py-6 px-6 md:px-16 flex justify-between items-center border-b border-zinc-900/50 sticky top-0 bg-[#030303]/80 backdrop-blur-xl z-50">
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="showPage('home')">
+            <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white text-xs font-bold">S</div>
+            <span class="text-base font-bold tracking-[0.4em] text-white">SABAR</span>
+        </div>
+        <nav class="hidden md:flex space-x-12 text-[11px] uppercase tracking-[0.25em] font-medium">
+            <button onclick="showPage('home')" class="text-white hover:text-zinc-400 transition">Hoyga</button>
+            <button onclick="showPage('brands')" class="hover:text-white transition">Full Brands</button>
+            <button onclick="scrollToSection('services')" class="hover:text-white transition">Adeegyada</button>
+            <button onclick="scrollToSection('showcase')" class="hover:text-white transition">Showcase</button>
+            <button onclick="scrollToSection('pricing')" class="hover:text-white transition">Xidhmooyinka</button>
+        </nav>
+        
+        <div>
+            <button onclick="showPage('contact')" class="bg-white text-black px-6 py-2.5 rounded-full text-[11px] font-bold uppercase tracking-widest hover:bg-zinc-200 transition duration-300">
+                Get In Touch
+            </button>
+        </div>
+    </header>
+
+    <div id="lightbox-modal" class="fixed inset-0 bg-black/95 z-50 hidden flex items-center justify-center p-4 backdrop-blur-md">
+        <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white text-2xl hover:text-zinc-400 transition">✕ Close</button>
+        <img id="lightbox-img" class="max-w-full max-h-[90vh] object-contain rounded-xl border border-zinc-900">
+    </div>
+
+    <main id="home-page" class="page active">
+        <section id="hero-interactive-container" class="min-h-[85vh] flex flex-col justify-center items-center text-center px-4">
+            <div class="mouse-glow" id="glow-element"></div>
+            
+            <div class="relative z-10 flex flex-col justify-center items-center">
+                <div class="inline-flex items-center space-x-2 border border-zinc-800/80 rounded-full px-4 py-1.5 text-[10px] uppercase tracking-[0.25em] text-zinc-400 mb-8 bg-zinc-900/30">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Available for Global Projects</span>
+                </div>
+                <h1 class="text-4xl md:text-8xl font-bold tracking-tight mb-8 max-w-5xl leading-[1.05] text-white font-light">
+                    <span>We Create Digital Impact.</span>
+                </h1>
+                
+                <div class="grid grid-cols-3 gap-8 my-12 max-w-xl w-full border-y border-zinc-900/60 py-6">
+                    <div>
+                        <h4 id="stats-projects-done" class="text-2xl md:text-4xl font-bold text-white tracking-tight">0</h4>
+                        <p class="text-[9px] uppercase tracking-widest text-zinc-600 mt-1">Projects Done</p>
+                    </div>
+                    <div>
+                        <h4 id="stats-happy-clients" class="text-2xl md:text-4xl font-bold text-white tracking-tight">3</h4>
+                        <p class="text-[9px] uppercase tracking-widest text-zinc-600 mt-1">Happy Clients</p>
+                    </div>
+                    <div>
+                        <h4 class="text-2xl md:text-4xl font-bold text-white tracking-tight">1</h4>
+                        <p class="text-[9px] uppercase tracking-widest text-zinc-600 mt-1">Years Experience</p>
+                    </div>
+                </div>
+
+                <div class="flex space-x-4">
+                    <button onclick="showPage('brands')" class="bg-white text-black px-10 py-4 rounded-full font-medium text-xs uppercase tracking-widest hover:bg-zinc-200 transition">Eeg Full Brands</button>
+                    <button onclick="scrollToSection('showcase')" class="bg-zinc-900/80 text-white border border-zinc-800 px-10 py-4 rounded-full font-medium text-xs uppercase tracking-widest hover:bg-white hover:text-black transition">Showcase Gallery</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="py-36 px-6 md:px-16 border-t border-zinc-900/60 bg-[#050507] reveal">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-24">
+                    <span class="text-[10px] uppercase tracking-[0.3em] text-zinc-600 font-bold block mb-3">01 // CORE SERVICES</span>
+                    <h2 class="text-3xl md:text-6xl font-bold text-white tracking-tight uppercase">Adeegyada Aan Bixino</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="glow-card p-10 rounded-3xl">
+                        <div class="text-2xl text-white mb-6">🎨</div>
+                        <h3 class="text-xl font-bold text-white mb-4 tracking-wide">Design Posts</h3>
+                        <p class="text-zinc-500 text-sm leading-relaxed font-light">Abuurista astaamo casri ah, naqshadaha xayaysiisyada ee baraha bulshada, iyo Brand Identity dhammaystiran.</p>
+                    </div>
+                    <div class="glow-card p-10 rounded-3xl">
+                        <div class="text-2xl text-white mb-6">🎬</div>
+                        <h3 class="text-xl font-bold text-white mb-4 tracking-wide">Video Editing</h3>
+                        <p class="text-zinc-500 text-sm leading-relaxed font-light">Tafatarka muuqaallada gaagaaban ee Reels, TikTok, iyo muqaallada dhaadheer oo wata Motion Graphics.</p>
+                    </div>
+                    <div class="glow-card p-10 rounded-3xl">
+                        <div class="text-2xl text-white mb-6">📈</div>
+                        <h3 class="text-xl font-bold text-white mb-4 tracking-wide">Social Media Management</h3>
+                        <p class="text-zinc-500 text-sm leading-relaxed font-light">Maamulka boggaga bulshada, diyaarinta Content Calendars, iyo maamulista ololeyaal suuqgeyn.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="showcase" class="py-36 px-6 md:px-16 border-t border-zinc-900/60 reveal">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-24">
+                    <span class="text-[10px] uppercase tracking-[0.3em] text-zinc-600 font-bold block mb-3">02 // PORTFOLIO GALLERY</span>
+                    <h2 class="text-3xl md:text-6xl font-bold text-white tracking-tight uppercase">Mashaariicda Istuudiyaha</h2>
+                    <p class="text-xs text-zinc-500 mt-2">Guji sawir kasta si uu kuugu weynaado (Full Screen View).</p>
+                </div>
+                <div id="home-showcase-container" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+            </div>
+        </section>
+
+        <section id="pricing" class="py-36 px-6 md:px-16 border-t border-zinc-900/60 bg-[#050507] reveal">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-24">
+                    <span class="text-[10px] uppercase tracking-[0.3em] text-zinc-600 font-bold block mb-3">03 // PRICING PLANS</span>
+                    <h2 class="text-3xl md:text-5xl font-bold text-white uppercase tracking-tight">Xidhmooyinka Qiimaha</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    
+                    <div class="border border-zinc-900 bg-zinc-950 p-8 rounded-3xl flex flex-col justify-between">
+                        <div>
+                            <h4 class="text-white font-bold text-base mb-2">Starter Plan</h4>
+                            <h3 class="text-3xl font-bold text-white mb-6">$150</h3>
+                            <ul class="space-y-4 text-xs text-zinc-400 border-t border-zinc-900 pt-6">
+                                <li>✓ Samaynta Logo-da rasmiga ah</li>
+                                <li>✓ 5 Naqshadood (Social Posts)</li>
+                                <li>✓ Helitaanka Faylalka Asalka ah</li>
+                            </ul>
+                        </div>
+                        <button onclick="showPage('contact')" class="w-full bg-zinc-900 border border-zinc-800 text-white py-3.5 rounded-xl text-xs uppercase font-bold tracking-wider hover:bg-white hover:text-black transition mt-8">Dooro Xidhmada</button>
+                    </div>
+
+                    <div class="border border-white/5 bg-zinc-900/10 p-8 rounded-3xl flex flex-col justify-between relative">
+                        <span class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-white text-black text-[8px] uppercase font-bold tracking-widest px-4 py-1 rounded-full">Ugu iibsiga badan</span>
+                        <div>
+                            <h4 class="text-white font-bold text-base mb-2">Growth Plan</h4>
+                            <h3 class="text-3xl font-bold text-white mb-6">$599</h3>
+                            <ul class="space-y-4 text-xs text-zinc-400 border-t border-zinc-900 pt-6">
+                                <li>✓ Buugga Dhameystiran ee Brand-ka</li>
+                                <li>✓ Diyaarinta Reels & Muuqaallo Bille ah</li>
+                                <li>✓ Istiraatiijiyadda (contect creator) Content-ka boggaga</li>
+                            </ul>
+                        </div>
+                        <button onclick="showPage('contact')" class="w-full bg-zinc-900 border border-zinc-800 text-white py-3.5 rounded-xl text-xs uppercase font-bold tracking-wider hover:bg-white hover:text-black transition mt-8">Dooro Xidhmada</button>
+                    </div>
+
+                    <div class="border-2 border-emerald-500/30 bg-zinc-900/40 p-8 rounded-3xl flex flex-col justify-between relative shadow-2xl">
+                        <span class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-emerald-500 text-black text-[8px] uppercase font-bold tracking-widest px-4 py-1 rounded-full">Qandaraas 10 Sano</span>
+                        <div>
+                            <h4 class="text-emerald-400 font-bold text-base mb-2">Xidhmada Iskaashiga</h4>
+                            <h3 class="text-2xl font-bold text-white mb-1">Bilaash Kula Billow</h3>
+                            <p class="text-[10px] text-zinc-500 mb-6 lowercase">Adeegyo naqshadayn oo lagu beddelanayo faa'iido-wadaag dhowr sano ah</p>
+                            <ul class="space-y-4 text-xs text-zinc-400 border-t border-zinc-900 pt-6">
+                                <li>✓ Adeegyada Koritaanka oo <span class="text-emerald-400 font-medium">Bilaash</span> ah</li>
+                                <li>✓ Heshiis Istiraatiijiyadeed oo 10 Sano ah</li>
+                                <li>✓ Faa'iido-wadaag iyo Dakhli-wadaag koraya</li>
+                                <li>✓ Kordhin qiimo oo tartiib-tartiib ah</li>
+                            </ul>
+                        </div>
+                        <button onclick="showPage('contact')" class="w-full bg-emerald-500 text-black py-3.5 rounded-xl text-xs uppercase font-bold tracking-wider hover:bg-emerald-400 transition mt-8">Codsiga Iskaashiga</button>
+                    </div>
+
+                    <div class="border border-white/20 bg-zinc-900/60 p-8 rounded-3xl flex flex-col justify-between relative shadow-2xl">
+                        <span class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-white text-black text-[8px] uppercase font-bold tracking-widest px-4 py-1 rounded-full">Elite Pick</span>
+                        <div>
+                            <h4 class="text-white font-bold text-base mb-2">Xidhmada Shirkadaha</h4>
+                            <h3 class="text-3xl font-bold text-white mb-6">Gaar ah</h3>
+                            <ul class="space-y-4 text-xs text-zinc-400 border-t border-zinc-900 pt-6">
+                                <li>✓ Dalabaad Naqshadayn oo aan xadidnayn</li>
+                                <li>✓ Naqshadeeye adiga kuu gaar ah</li>
+                                <li>✓ Taageero joogto ah 24/7</li>
+                            </ul>
+                        </div>
+                        <button onclick="showPage('contact')" class="w-full bg-white text-black py-3.5 rounded-xl text-xs uppercase font-bold tracking-wider hover:bg-zinc-200 transition mt-8">La Xiriir Studio</button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <main id="brands-page" class="page">
+        <section class="py-24 px-6 md:px-16 max-w-7xl mx-auto">
+            <div class="mb-16 border-b border-zinc-900 pb-10">
+                <span class="text-[10px] uppercase tracking-[0.3em] text-zinc-500 font-bold block mb-3">// PREMIUM CASE STUDIES</span>
+                <h2 class="text-3xl md:text-5xl font-bold text-white uppercase tracking-tight">Full Brand Identities</h2>
+            </div>
+            <div id="dynamic-brands-container" class="grid grid-cols-1 md:grid-cols-2 gap-12"></div>
+        </section>
+    </main>
+
+    <main id="contact-page" class="page">
+        <section class="py-24 px-6 md:px-16 max-w-3xl mx-auto min-h-[85vh] flex flex-col justify-center">
+            <button onclick="showPage('home')" class="inline-flex items-center space-x-2 text-xs uppercase tracking-widest text-zinc-400 mb-12 hover:text-white transition"><span>← Back to Home</span></button>
+            <h2 class="text-3xl md:text-5xl font-bold text-white uppercase tracking-tight mb-8">Aan Bilaawno Mashruucaaga</h2>
+            <form class="space-y-6 bg-zinc-950 border border-zinc-900/80 p-8 rounded-2xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <input type="text" required class="w-full bg-[#030303] border border-zinc-900 rounded-xl px-5 py-4 text-sm text-white focus:outline-none" placeholder="Magacaaga">
+                    <input type="email" required class="w-full bg-[#030303] border border-zinc-900 rounded-xl px-5 py-4 text-sm text-white focus:outline-none" placeholder="E-mailkaaga">
+                </div>
+                <textarea rows="5" required class="w-full bg-[#030303] border border-zinc-900 rounded-xl px-5 py-4 text-sm text-white focus:outline-none" placeholder="Mashaariicda..."></textarea>
+                <button type="submit" class="w-full bg-white text-black py-4 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-zinc-200 transition">Send Brief</button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="py-16 border-t border-zinc-900 bg-[#020203] px-6 md:px-16 flex flex-col md:flex-row justify-between items-center text-[9px] text-zinc-600 uppercase tracking-[0.3em] space-y-6 md:space-y-0">
+        <div>
+            &copy; 2026 SABAR Creative Design Studio.
+        </div>
+        <div class="flex items-center space-x-6 text-sm text-zinc-500">
+            <a href="https://www.facebook.com/share/1ER37E6PwS/" target="_blank" class="hover:text-[#1877F2] transition duration-300 transform hover:scale-110">
+                <i class="fa-brands fa-facebook-f"></i>
+            </a>
+            <a href="https://www.tiktok.com/@sabar.creative" target="_blank" class="hover:text-white transition duration-300 transform hover:scale-110">
+                <i class="fa-brands fa-tiktok"></i>
+            </a>
+            <a href="https://www.youtube.com/@SabarCreative-1" target="_blank" class="hover:text-[#FF0000] transition duration-300 transform hover:scale-110">
+                <i class="fa-brands fa-youtube"></i>
+            </a>
+        </div>
+    </footer>
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'so',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+            
+            if(document.cookie.trim() === "" || document.cookie.includes('googtrans=/so/ar')) {
+                document.cookie = "googtrans=/so/so; path=/";
+                document.cookie = "googtrans=/so/so; domain=" + window.location.hostname + "; path=/";
+            }
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <script>
+        // ======= 🖱️ MOUSE INTERACTIVE MOVING EFFECT =======
+        const heroSection = document.getElementById('hero-interactive-container');
+        const glowElement = document.getElementById('glow-element');
+
+        if(heroSection && glowElement) {
+            heroSection.addEventListener('mousemove', (e) => {
+                const rect = heroSection.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                glowElement.style.left = `${x}px`;
+                glowElement.style.top = `${y}px`;
+            });
+        }
+
+        // ======= ✨ SCROLL REVEAL ANIMATION =======
+        function revealSectionsOnScroll() {
+            const reveals = document.querySelectorAll('.reveal');
+            reveals.forEach(reveal => {
+                const windowHeight = window.innerHeight;
+                const elementTop = reveal.getBoundingClientRect().top;
+                const elementVisible = 100;
+
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add('reveal-active');
+                }
+            });
+        }
+        window.addEventListener('scroll', revealSectionsOnScroll);
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            const targetPage = document.getElementById(pageId + '-page');
+            if(targetPage) targetPage.classList.add('active');
+            window.scrollTo(0, 0);
+            revealSectionsOnScroll();
+        }
+        
+        function scrollToSection(sectionId) {
+            showPage('home');
+            setTimeout(() => { 
+                const targetSec = document.getElementById(sectionId);
+                if(targetSec) targetSec.scrollIntoView(); 
+            }, 100);
+        }
+
+        function openLightbox(imgSrc) {
+            const modal = document.getElementById('lightbox-modal');
+            const img = document.getElementById('lightbox-img');
+            if(modal && img) {
+                img.src = imgSrc;
+                modal.classList.remove('hidden');
+            }
+        }
+        function closeLightbox() {
+            const modal = document.getElementById('lightbox-modal');
+            if(modal) modal.classList.add('hidden');
+        }
+
+        function fetchDataFromServer() {
+            fetch('/api/projects')
+                .then(res => res.json())
+                .then(data => {
+                    const statsProjects = document.getElementById('stats-projects-done');
+                    if(statsProjects) statsProjects.innerText = data.length;
+                    
+                    const brandsContainer = document.getElementById('dynamic-brands-container');
+                    const showcaseContainer = document.getElementById('home-showcase-container');
+                    
+                    if(brandsContainer) brandsContainer.innerHTML = '';
+                    if(showcaseContainer) showcaseContainer.innerHTML = '';
+
+                    data.forEach((project, index) => {
+                        const projectHTML = `
+                            <div class="bg-zinc-950 border border-zinc-900 p-6 rounded-3xl space-y-4">
+                                <img src="${project.image}" onclick="openLightbox('${project.image}')" class="h-80 w-full object-cover rounded-2xl border border-zinc-900 cursor-zoom-in hover:opacity-90 transition" alt="${project.title}">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] uppercase tracking-widest bg-zinc-900 px-3 py-1 rounded-full text-zinc-400">${project.category}</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-white tracking-wide">${project.title}</h3>
+                                <p class="text-xs text-zinc-500 leading-relaxed font-light">${project.description}</p>
+                            </div>`;
+                        
+                        if(brandsContainer) brandsContainer.insertAdjacentHTML('beforeend', projectHTML);
+
+                        if (index < 3 && showcaseContainer) {
+                            const showcaseHTML = `
+                                <div class="bg-zinc-950 border border-zinc-900/60 p-4 rounded-2xl glow-card">
+                                    <img src="${project.image}" onclick="openLightbox('${project.image}')" class="h-56 w-full object-cover rounded-xl mb-4 border border-zinc-900 cursor-zoom-in hover:opacity-90 transition" alt="${project.title}">
+                                    <h4 class="text-sm font-bold text-white">${project.title}</h4>
+                                    <p class="text-xs text-zinc-500 mt-1">${project.category}</p>
+                                </div>`;
+                            showcaseContainer.insertAdjacentHTML('beforeend', showcaseHTML);
+                        }
+                    });
+                    revealSectionsOnScroll();
+                });
+        }
+
+        // AUTOMATIC LINK CHECKER & AMNIGA
+        window.addEventListener('load', () => {
+            const kasooXoogPath = window.location.pathname;
+            if (kasooXoogPath === '/control' || kasooXoogPath === '/analytics' || kasooXoogPath === '/admin') {
+                const isUserLoggedIn = sessionStorage.getItem('isAdminLoggedIn'); 
+                if (isUserLoggedIn === 'true') {
+                    showPage('admin-panel'); 
+                } else {
+                    alert('Amniga SABAR Studio: Fadlan marka hore soo gal (Login)!');
+                    showPage('contact'); 
+                    window.history.pushState({}, '', '/'); 
+                }
+            }
+        });
+    </script>
+</body>
+</html>

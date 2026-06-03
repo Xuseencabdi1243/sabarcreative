@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <title>SABAR Studio - Control & Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght text-zinc-400;300;400;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #030303; }</style>
+</head>
+<body class="bg-[#030303] text-zinc-400 p-6 md:p-12" onload="loadDashboardData()">
+
+    <div class="max-w-6xl mx-auto space-y-10">
+        <div class="flex justify-between items-center border-b border-zinc-900 pb-6">
+            <div>
+                <h1 class="text-xl font-bold text-white tracking-widest uppercase">🎛️ SABAR STUDIO CONTROL</h1>
+                <p class="text-xs text-zinc-600 mt-1">Maamulista Mashaariicda iyo Falanqaynta Suuqgeynta</p>
+            </div>
+            <a href="/api/admin/logout" class="bg-zinc-900 border border-zinc-800 text-xs text-red-400 px-5 py-2.5 rounded-xl hover:bg-red-950/20 transition">Log Out 🔒</a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-zinc-950 border border-zinc-900 p-8 rounded-2xl flex justify-between items-center">
+                <div>
+                    <p class="text-[10px] uppercase tracking-widest text-zinc-500">Mashaariicda Live-ka ah</p>
+                    <h3 id="analytic-projects" class="text-4xl font-bold text-white tracking-tight mt-2">0</h3>
+                </div>
+                <div class="text-3xl bg-zinc-900/40 w-14 h-14 rounded-xl flex items-center justify-center border border-zinc-800">🎨</div>
+            </div>
+            <div class="bg-zinc-950 border border-zinc-900 p-8 rounded-2xl flex justify-between items-center">
+                <div>
+                    <p class="text-[10px] uppercase tracking-widest text-zinc-500">Fariimaha Macaamiisha</p>
+                    <h3 id="analytic-messages" class="text-4xl font-bold text-white tracking-tight mt-2">0</h3>
+                </div>
+                <div class="text-3xl bg-zinc-900/40 w-14 h-14 rounded-xl flex items-center justify-center border border-zinc-800">📩</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-zinc-950 border border-zinc-900 p-6 rounded-2xl h-fit">
+                <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-4">➕ Publish New Brand Identity</h3>
+                <form action="/api/projects" method="POST" enctype="multipart/form-data" class="space-y-4 text-xs">
+                    <div>
+                        <label class="block text-zinc-500 mb-1">Brand Name / Title</label>
+                        <input type="text" name="title" required class="w-full bg-zinc-900 border border-zinc-800 p-3 rounded-lg text-white focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-500 mb-1">Category / Nooca</label>
+                        <input type="text" name="category" required class="w-full bg-zinc-900 border border-zinc-800 p-3 rounded-lg text-white focus:outline-none" placeholder="e.g., Full Identity">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-500 mb-1">Image / Poster</label>
+                        <input type="file" name="image" required class="w-full bg-zinc-900 border border-zinc-800 p-2 rounded-lg text-zinc-400 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-zinc-500 mb-1">Description</label>
+                        <textarea name="description" rows="3" required class="w-full bg-zinc-900 border border-zinc-800 p-3 rounded-lg text-white focus:outline-none"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-white text-black py-3 rounded-lg font-bold uppercase tracking-wider hover:bg-zinc-200 transition">Upload to Live Site</button>
+                </form>
+            </div>
+
+            <div class="md:col-span-2 space-y-6">
+                <div class="bg-zinc-950 border border-zinc-900 p-6 rounded-2xl">
+                    <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-4">⚙️ Maamul Mashaariicda Live-ka ah (Delete Base)</h3>
+                    <div id="admin-projects-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[400px] overflow-y-auto pr-2">
+                        </div>
+                </div>
+
+                <div class="bg-zinc-950 border border-zinc-900 p-6 rounded-2xl">
+                    <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-4">📥 Inbound Client Briefs (Fariimaha)</h3>
+                    <div id="messages-container" class="space-y-4 overflow-y-auto max-h-[300px] pr-2">
+                        <p class="text-xs text-zinc-600">Wali wax fariin ah kama soo dhacin macaamiisha...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function loadDashboardData() {
+            fetch('/api/admin/analytics')
+                .then(res => {
+                    if (res.status === 401) { window.location.href = '/login.html'; return; }
+                    return res.json();
+                })
+                .then(data => {
+                    if(!data) return;
+                    document.getElementById('analytic-projects').innerText = data.totalProjects;
+                    document.getElementById('analytic-messages').innerText = data.totalMessages;
+
+                    // Soo saar liiska mashaariicda si loo tirtiri karo
+                    const projectsList = document.getElementById('admin-projects-list');
+                    projectsList.innerHTML = data.recentProjects.length === 0 ? '<p class="text-xs text-zinc-600">Wali wax mashruuc ah ma aadan soo gelin.</p>' : '';
+                    
+                    data.recentProjects.forEach(p => {
+                        projectsList.innerHTML += `
+                            <div class="border border-zinc-900 bg-[#030303] p-3 rounded-xl flex items-center space-x-3 justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <img src="${p.image}" class="w-12 h-12 object-cover rounded-lg border border-zinc-900">
+                                    <div>
+                                        <h4 class="text-white font-bold text-xs truncate max-w-[120px]">${p.title}</h4>
+                                        <p class="text-[10px] text-zinc-600">${p.category}</p>
+                                    </div>
+                                </div>
+                                <button onclick="deleteProject('${p.id}')" class="bg-red-950/40 border border-red-900 text-red-400 text-[10px] uppercase font-bold px-3 py-1.5 rounded-lg hover:bg-red-900 hover:text-white transition">Delete</button>
+                            </div>`;
+                    });
+
+                    const msgContainer = document.getElementById('messages-container');
+                    if(data.recentMessages.length > 0) {
+                        msgContainer.innerHTML = '';
+                        data.recentMessages.forEach(msg => {
+                            msgContainer.innerHTML += `
+                                <div class="border border-zinc-900 bg-[#030303]/60 p-4 rounded-xl text-xs space-y-2">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-bold text-white text-sm">${msg.name}</span>
+                                        <span class="text-[10px] text-zinc-600">${msg.date}</span>
+                                    </div>
+                                    <p class="text-zinc-500 font-mono text-[11px]">${msg.email}</p>
+                                    <p class="text-zinc-400 bg-zinc-950 p-2.5 rounded-lg border border-zinc-900/40">${msg.message}</p>
+                                </div>`;
+                        });
+                    }
+                });
+        }
+
+        // Farsamada Tirtirista dhabta ah
+        function deleteProject(id) {
+            if(confirm("Ma hubtaa inaad rabto inaad tirtirto mashruucan si rasmi ah?")) {
+                fetch(`/api/projects/${id}`, { method: 'DELETE' })
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.success) {
+                            alert("Mashruucii si guul leh ayaa loo tirtiray!");
+                            loadDashboardData();
+                        }
+                    });
+            }
+        }
+    </script>
+</body>
+</html>
